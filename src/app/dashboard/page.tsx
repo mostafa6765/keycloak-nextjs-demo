@@ -1,9 +1,12 @@
 "use client";
 
 import { useKeycloakAuth } from "@/providers/KeycloakProvider";
+import { useAxios } from "@/utils/axiosClient";
+
 
 export default function DashboardPage() {
   const { initialized, authenticated, login, logout, token, hasRole } = useKeycloakAuth();
+  const axios = useAxios();
 
   if (!initialized) {
     return (
@@ -11,6 +14,12 @@ export default function DashboardPage() {
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
+  }
+
+  function getUser() {
+    axios.get("/api/users/me").then((res) => {
+      console.log(res.data);
+    });
   }
 
   return (
@@ -28,7 +37,9 @@ export default function DashboardPage() {
                   Logout
                 </button>
               </div>
-              
+              <div>
+                <button onClick={getUser}>Get User</button>
+              </div>
               <div className="space-y-6">
                 <div className="bg-gray-50 rounded-lg p-6">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">Authentication Status</h2>
